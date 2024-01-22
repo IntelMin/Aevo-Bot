@@ -1,5 +1,5 @@
 # General
-bot/.env
+.env
 api/.env
 !.env.example
 *.log
