@@ -1,0 +1,65 @@
+# General
+bot/.env
+api/.env
+!.env.example
+*.log
+*.log.*
+*.tmp
+.DS_Store
+Thumbs.db
+
+# Next.js / Node.js
+/node_modules/
+/.next/
+/out/
+/.pnp
+.pnp.js
+/yarn.lock
+/package-lock.json
+.npm/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Python - Jupyter Notebook
+.ipynb_checkpoints
+
+# Distribution / Packaging
+.Python
+*.egg-info/
+*.egg
+/dist/
+/build/
+/develop-eggs/
+/downloads/
+/eggs/
+/parts/
+/sdist/
+/var/
+/wheels/
+/pip-wheel-metadata/
+/share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Certificates
+*.pem
+*.key
+*.cert
+
+# VS Code
+.vscode/
