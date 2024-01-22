@@ -1,20 +1,17 @@
 from Aevo_SDK.AlethieumAevoSDK import AevoClient
-# from clientConfig import clientConfig
+from utils.config import *
 
 from utils.logger import Logger
 
 log = Logger("Aevo Bot")
 
-### CLIENT CONFIG ###
-# # Description: Please add your API key and secret to the clientConfig file.
-# # Description: In the Readme.md file, you will find instructions on how to create an API key and secret.
 
 clientConfig = {
-    'signing_key': '',
-    'wallet_address': '',
-    'api_key': '',
-    'api_secret': '',
-    'env': '',
+    'signing_key': SIGNING_KEY,
+    'wallet_address': WALLET_ADDRESS,
+    'api_key': API_KEY,
+    'api_secret': API_SECRET,
+    'env': 'testnet',
 }
 
 # Add Credentials
