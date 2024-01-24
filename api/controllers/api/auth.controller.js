@@ -1,40 +1,19 @@
-import { ethers } from 'ethers';
+import { ethers } from "ethers";
 // import promisify from 'promisify';
-const util = require('util')
+const util = require("util");
 
-const provider = new ethers.JsonRpcProvider('https://l2-aevo-mainnet-prod-0.t.conduit.xyz');
+const provider = new ethers.JsonRpcProvider(
+  "https://l2-aevo-mainnet-prod-0.t.conduit.xyz"
+);
 
 export async function auth(req, res) {
   try {
     console.log("[api/auth] Requested");
 
-    const account = req.body.address;
-    const private_key = req.body.private_key;
+    const { account, private_key } = req.body;
 
-    const signer  = ethers.Wallet.createRandom();
+    const signer = ethers.Wallet.createRandom();
     const signerAccount = new ethers.Wallet(private_key, provider);
-
-    // First we hash the register data
-    // const registerHash = ethers.TypedDataEncoder.hash(
-    //   {
-    //     name: "Aevo Mainnet",
-    //     version: "1",
-    //     chainId: 1,
-    //   },
-    //   {
-    //     Register: [
-    //       { name: "key", type: "address" },
-    //       { name: "expiry", type: "uint256" },
-    //     ],
-    //   },
-    //   {
-    //     key: await signer.getAddress(),
-    //     expiry: ethers.MaxUint256.toString(),
-    //   }
-    // );
-
-    // Then we sign the hash
-    // const res = await provider.provider.send("eth_sign", [account.toLowerCase(), registerHash]);
 
     const accountSignature = await signerAccount.signTypedData(
       {
@@ -43,10 +22,14 @@ export async function auth(req, res) {
         chainId: 1,
       },
       {
-        SignKey: [{ name: "account", type: "address" }],
+        Register: [
+          { name: "key", type: "address" },
+          { name: "expiry", type: "uint256" },
+        ],
       },
       {
-        account: account
+        key: await signer.getAddress(),
+        expiry: ethers.MaxUint256.toString(),
       }
     );
 
@@ -60,19 +43,16 @@ export async function auth(req, res) {
         SignKey: [{ name: "account", type: "address" }],
       },
       {
-        account: signer.address
+        account: account,
       }
     );
 
-    res.status(200).json(
-      { 
-        signingKey: signer,
-        accountSignature: accountSignature,
-        signingKeySignature: signingKeySignature
-      }
-    );
-
-  } catch(e) {
+    res.status(200).json({
+      signer_address: signer.address,
+      account_signature: accountSignature,
+      signing_key_signature: signingKeySignature,
+    });
+  } catch (e) {
     console.error("[api/singing_key] Error:", e);
     res.status(500).json({ error: e });
   }
