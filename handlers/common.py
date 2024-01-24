@@ -6,6 +6,7 @@ from aiogram.types import Message, ReplyKeyboardRemove, BotCommand, BotCommandSc
 from keyboards.menu import generate_menu, home_button
 from utils.config import BOT_TOKEN, BOT_NAME
 from database.db import get_user
+from .wallet import *
 
 router = Router()
 router.message.filter(F.chat.type == "private")
@@ -57,12 +58,14 @@ async def cmd_help(message: Message, state: FSMContext):
         reply_markup=ReplyKeyboardRemove()
     )
     
+@router.callback_query(F.data == "wallet_create")
+async def create_wallet(callback: CallbackQuery, state: FSMContext):
+    await create_wallet_callback(callback, state)
 
-@router.callback_query(F.data.startswith("wallet_:"))
-async def sign_up(call: CallbackQuery, state: FSMContext):
-    await call.answer(cache_time=60)
-    await call.message.answer(
-        text = "🚀 *Welcome to {BOT_NAME} on Telegram!* 🚀\n\n",
-        parse_mode='Markdown',
-        reply_markup=ReplyKeyboardRemove()
-    )
+@router.callback_query(F.data == "wallet_import")
+async def import_wallet(callback: CallbackQuery, state: FSMContext):
+    await import_wallet_callback(callback, state)
+
+@router.message(WalletStates.setting_wallet)
+async def process_import_wallet(message: Message, state: FSMContext):
+    await process_import_wallet_callback(message, state)
