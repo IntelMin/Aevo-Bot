@@ -1,9 +1,10 @@
 import secrets
 from web3 import Web3
-from .config import RPC_URL, BOT_CONTRACT
+from .config import RPC_URL, SIGNING_KEY
 # from .abi import abi_manager
 
 w3 = Web3(Web3.HTTPProvider(RPC_URL))
+
 # BOT_CONTRACT = Web3.to_checksum_address(BOT_CONTRACT)
 
 # # Ensure we're connected to the node
@@ -19,13 +20,13 @@ w3 = Web3(Web3.HTTPProvider(RPC_URL))
     
 #     return False  
 
-# def generate_eth_private_key():
-#     # A private key is a 256-bit number, which can be represented as a 32-byte hexadecimal
-#     max_hex_value = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364140 
-#     private_key_hex = secrets.randbelow(max_hex_value)  
+def generate_eth_private_key():
+    # A private key is a 256-bit number, which can be represented as a 32-byte hexadecimal
+    max_hex_value = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364140 
+    private_key_hex = secrets.randbelow(max_hex_value)  
     
-#     # Converting the number to a hexadecimal string and ensuring it has a length of 64 characters
-#     return hex(private_key_hex)[2:].zfill(64)
+    # Converting the number to a hexadecimal string and ensuring it has a length of 64 characters
+    return hex(private_key_hex)[2:].zfill(64)
 
 # def get_eth_balances(wallet_addresses):
 #     balances = {}

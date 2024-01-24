@@ -10,10 +10,8 @@ import requests
 import websockets
 from eip712_structs import Address, Boolean, EIP712Struct, Uint, make_domain
 from eth_account import Account
-# from loguru import logger
 from utils.logger import Logger
 from web3 import Web3
-
 
 logger = Logger("Aevo Bot")
 
@@ -189,6 +187,8 @@ class AevoClient:
             await self.reconnect()
 
     # Public REST API
+            
+    # Get price of asset -> {price, timestamp}
     def get_index(self, asset):
         req = self.client.get(f"{self.rest_url}/index?asset={asset}")
         data = req.json()
@@ -203,6 +203,21 @@ class AevoClient:
         req = self.client.get(
             f"{self.rest_url}/orderbook?instrument_name={instrument_name}"
         )
+        data = req.json()
+        return data
+
+    # Get asset instrument: default is perpetuals
+    def get_instrument(self, asset, type="PERPETUAL"):
+        req = self.client.get(f"{self.rest_url}/markets?asset={asset}&instrument_type={type}")
+        data = req.json()
+        if type == "PERPETUAL":
+            return data[0]
+        else:
+            return data
+        
+    # Get funding rate for perps
+    def get_funding_rate(self, asset):
+        req = self.client.get(f"{self.rest_url}/funding")
         data = req.json()
         return data
 

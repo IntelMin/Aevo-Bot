@@ -9,13 +9,13 @@ api/.env
 Thumbs.db
 
 # Next.js / Node.js
-/node_modules/
+api/node_modules/
 /.next/
 /out/
 /.pnp
 .pnp.js
 /yarn.lock
-/package-lock.json
+api/package-lock.json
 .npm/
 
 # Python
