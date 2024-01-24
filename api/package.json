@@ -4,14 +4,35 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon --inspect app.js --exec babel-node --presets env",
+    "release": "npm run clean && npm run build && npm run serve",
+    "clean": "rm -rf dist && mkdir dist",
+    "build": "babel . -s -D -d dist --presets env --ignore node_modules",
+    "serve": "node dist/app.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Intel",
   "license": "ISC",
   "dependencies": {
+    "@supabase/supabase-js": "^2.38.5",
+    "@synthetixio/wei": "^2.74.4",
+    "axios": "^1.6.5",
+    "bignumber.js": "^9.1.2",
+    "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
     "ethers": "^6.10.0",
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "lodash": "^4.17.21",
+    "promisify": "^0.0.3",
+    "qs": "^6.11.2",
+    "solc": "^0.8.23-fixed",
+    "web3": "^4.3.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "nodemon": "^2.0.6"
   }
 }
