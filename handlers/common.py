@@ -5,6 +5,7 @@ from aiogram.types import Message, CallbackQuery
 from aiogram.types import Message, ReplyKeyboardRemove, BotCommand, BotCommandScopeAllPrivateChats
 from keyboards.menu import generate_menu, generate_new_user_menu
 from utils.config import BOT_TOKEN, BOT_NAME
+from database.db import get_user
 
 router = Router()
 router.message.filter(F.chat.type == "private")
@@ -30,29 +31,13 @@ async def cmd_start(message: Message, state: FSMContext):
     
     await state.clear()
 
-    # chat_id = message.chat.id
     chat_id = message.from_user.id
-    username = message.from_user.username
-    first_name = message.from_user.first_name
-    last_name = message.from_user.last_name
 
-    # user_data = {
-    #     'chat_id': chat_id,
-    #     'username': username,
-    #     'first_name': first_name,
-    #     'last_name': last_name,
-    # }
-
-    # Calling create_if_not_exists function
-    # user_record = await user_manager.create_if_not_exists(user_data)
-
-    # Saving user info to FSM under "info"
-    # await state.set_data({'info': user_record})
-
-    # Checking if the user has wallets
-    # if user_record['inventory'] == 0:
-    #     greeting_message += "Looks like you don't have any wallets added yet, let's change that!\n\n"
-    #     keyboard = generate_new_user_menu() 
+    user_record = get_user(chat_id)
+    if user_record:
+        print('User exists')
+        await trigger_menu(preload_message)
+        return
         
     greeting_message = "Let's get started! 💼\n\n"
     keyboard = generate_menu() 

@@ -232,6 +232,17 @@ class AevoClient:
             f"{self.rest_url}/orders", json=data, headers=self.rest_headers
         )
         return req.json()
+    
+    def rest_edit_order(
+        self, order_id, instrument_id, is_buy, limit_price, quantity, post_only=True
+    ):
+        data = self.create_order_rest_json(
+            int(instrument_id), is_buy, limit_price, quantity, post_only
+        )
+        req = self.client.post(
+            f"{self.rest_url}/orders/{order_id}", json=data, headers=self.rest_headers
+        )
+        return req.json()
 
     def rest_create_market_order(self, instrument_id, is_buy, quantity):
         limit_price = 0
