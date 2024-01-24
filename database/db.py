@@ -10,9 +10,6 @@ supabase: Client = create_client(supabase_url, supabase_key)
 def add_user(user_id, details):
     supabase.table('aevo_users').insert({"id": user_id, "details": details}).execute()
 
-def get_users():
-    return supabase.table('aevo_users').select("*").execute().data
-
 def get_user(user_id):
     data = supabase.table('aevo_users').select("*").match({"id": user_id}).execute().data
     return None if len(data) == 0 else data[0]

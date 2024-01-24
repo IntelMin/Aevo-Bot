@@ -3,7 +3,7 @@ from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
 from aiogram.types import Message, ReplyKeyboardRemove, BotCommand, BotCommandScopeAllPrivateChats
-from keyboards.menu import generate_menu, generate_new_user_menu
+from keyboards.menu import generate_menu, home_button
 from utils.config import BOT_TOKEN, BOT_NAME
 from database.db import get_user
 
@@ -36,7 +36,8 @@ async def cmd_start(message: Message, state: FSMContext):
     user_record = get_user(chat_id)
     if user_record:
         print('User exists')
-        await trigger_menu(preload_message)
+        username = message.from_user.username
+        preload_message.edit_text(text=f'Welcome back {username}', reply_markup=home_button())
         return
         
     greeting_message = "Let's get started! 💼\n\n"
@@ -56,26 +57,12 @@ async def cmd_help(message: Message, state: FSMContext):
         reply_markup=ReplyKeyboardRemove()
     )
     
-# @router.message(Command("wallet"))
-@router.callback_query(F.data == "main_menu")
-async def handle_menu(callback: CallbackQuery, state: FSMContext):
-    print('Menu button pressed')
-    
-    message_id = callback.message.message_id
-    
-    try:
-        callback.message.edit_text(text="👋 Hello and welcome to *{BOT_NAME} Bot*! 🤖\n")
-        callback.message.edit_reply_markup(reply_markup=None)
-        callback.message.delete()
-    except:
-        pass
-    
-    await trigger_menu(callback.message)
-    
 
-async def trigger_menu(message):
-    menu_text = ("{BOT_NAME} Bot! 🤖\n\n"
-                "What this bot does.\n\n"
-                "Good luck! 💼")
-    
-    await message.answer(menu_text, reply_markup=generate_menu(),  show_alert=True)
+@router.callback_query(F.data.startswith("wallet_:"))
+async def sign_up(call: CallbackQuery, state: FSMContext):
+    await call.answer(cache_time=60)
+    await call.message.answer(
+        text = "🚀 *Welcome to {BOT_NAME} on Telegram!* 🚀\n\n",
+        parse_mode='Markdown',
+        reply_markup=ReplyKeyboardRemove()
+    )
