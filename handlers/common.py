@@ -6,7 +6,7 @@ from aiogram.types import Message, ReplyKeyboardRemove, BotCommand, BotCommandSc
 from keyboards.menu import generate_menu, home_button
 from utils.config import BOT_TOKEN, BOT_NAME
 from database.db import get_user
-from .wallet import *
+from .sign_up import *
 
 router = Router()
 router.message.filter(F.chat.type == "private")
@@ -58,14 +58,23 @@ async def cmd_help(message: Message, state: FSMContext):
         reply_markup=ReplyKeyboardRemove()
     )
     
-@router.callback_query(F.data == "wallet_create")
+# Sign Up handlers
+@router.callback_query(F.data == "aevo_signup")
 async def create_wallet(callback: CallbackQuery, state: FSMContext):
-    await create_wallet_callback(callback, state)
+    await sign_up_callback(callback, state)
 
-@router.callback_query(F.data == "wallet_import")
-async def import_wallet(callback: CallbackQuery, state: FSMContext):
-    await import_wallet_callback(callback, state)
+@router.message(WalletStates.setting_address)
+async def process_wallet_callback(message: Message, state: FSMContext):
+    await wallet_callback(message, state)
 
-@router.message(WalletStates.setting_wallet)
-async def process_import_wallet(message: Message, state: FSMContext):
-    await process_import_wallet_callback(message, state)
+@router.message(WalletStates.setting_signature)
+async def process_signature_callback(message: Message, state: FSMContext):
+    await signature_callback(message, state)
+
+@router.message(WalletStates.setting_apikey)
+async def process_apikey_callback(message: Message, state: FSMContext):
+    await apikey_callback(message, state)
+
+@router.message(WalletStates.setting_apisecret)
+async def process_apisecret_callback(message: Message, state: FSMContext):
+    await apisecret_callback(message, state)

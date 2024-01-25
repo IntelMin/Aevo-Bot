@@ -14,11 +14,9 @@ class MenuFactory(CallbackData, prefix="trade"):
 
 def generate_menu():
     markup = InlineKeyboardBuilder()
-    markup.button(text="----- Set up Aevo Account -----", callback_data='filler')
-    markup.button(text="Create Wallet", callback_data="wallet_create")
-    markup.button(text="Import Wallet", callback_data="wallet_import")
+    markup.button(text="----- Set up Aevo Account -----", callback_data='aevo_signup')
 
-    markup.adjust(1, 2)
+    markup.adjust(1)
     return markup.as_markup()
 
 def home_button():

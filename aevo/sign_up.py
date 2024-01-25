@@ -22,13 +22,18 @@ async def register(account, signer, account_sig, signer_sig):
     res = requests.post(url, json=payload, headers=headers)
     if res.status_code == 200:
         data = res.json()
+        return data
+    return None
     
-    return data
 async def sign_up(private_key):
     address = w3.eth.account.from_key(private_key).address
     payload = {
       "account": address,
       "private_key": private_key
     }
-    res = requests.get(API_URL, json=payload, headers=headers)
-    data = res.json()
+    res = requests.post(API_URL, json=payload, headers=headers)
+    if res.status_code == 200:
+        data = res.json()
+        register_data = await register(**data)
+        return register_data
+    return None

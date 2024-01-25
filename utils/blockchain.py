@@ -13,12 +13,15 @@ w3 = Web3(Web3.HTTPProvider(RPC_URL))
 
 # contract = w3.eth.contract(address=BOT_CONTRACT, abi=abi_manager.get_abi('FriendtechSharesV1'))
 
-# def is_valid_eth_private_key(pk: str):
-#     pk = pk[2:] if pk.startswith('0x') else pk
-#     if len(pk) == 64 and pk.isalnum():
-#         return pk  
+def is_valid_eth_private_key(pk: str):
+    pk = pk[2:] if pk.startswith('0x') else pk
+    if len(pk) == 64 and pk.isalnum():
+        return pk  
     
-#     return False  
+    return False  
+
+def is_valid_address(address: str):
+    return Web3.isAddress(address)
 
 def generate_eth_private_key():
     # A private key is a 256-bit number, which can be represented as a 32-byte hexadecimal

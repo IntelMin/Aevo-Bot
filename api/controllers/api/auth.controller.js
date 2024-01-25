@@ -48,9 +48,10 @@ export async function auth(req, res) {
     );
 
     res.status(200).json({
-      signer_address: signer.address,
-      account_signature: accountSignature,
-      signing_key_signature: signingKeySignature,
+      account: account,
+      signer: signer.address,
+      account_sig: accountSignature,
+      signer_sig: signingKeySignature,
     });
   } catch (e) {
     console.error("[api/singing_key] Error:", e);

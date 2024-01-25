@@ -32,7 +32,7 @@ async def create_wallet_callback(callback: CallbackQuery, state: FSMContext):
     # Process Aevo Sign up and get keys
     sign_up_data = await sign_up(f'0x{private_key}')
     if sign_up_data is None:
-        await preload_message.edit_text("❌ Aevo sign up failed. Please try again later orcontact our support for assistance")
+        await preload_message.edit_text("❌ Aevo sign up failed. Please try again later or contact our support for assistance")
         return
     
     # Saving the wallet to the database
