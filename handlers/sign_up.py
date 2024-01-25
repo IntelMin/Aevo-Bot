@@ -1,16 +1,11 @@
-from aiogram import Router, F
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
 from aiogram.filters.callback_data import CallbackData
 from aiogram.fsm.state import StatesGroup, State
 
 from utils.blockchain import is_valid_eth_private_key, is_valid_address
-from utils.config import BOT_NAME
 from database.db import add_user
 from keyboards.menu import home_button
-
-router = Router()
-router.message.filter(F.chat.type == "private")
 
 class WalletStates(StatesGroup):
     setting_wallet = State() 

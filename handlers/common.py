@@ -1,12 +1,14 @@
 from aiogram import Bot, F, Router
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
-from aiogram.types import Message, CallbackQuery
-from aiogram.types import Message, ReplyKeyboardRemove, BotCommand, BotCommandScopeAllPrivateChats
-from keyboards.menu import generate_menu, home_button, main_menu
-from utils.config import BOT_TOKEN, BOT_NAME
-from database.db import get_user
+from aiogram.types import Message, CallbackQuery, ReplyKeyboardRemove
+
+from keyboards.menu import generate_menu, home_button
+from utils.config import BOT_NAME
+from database.db import get_user, add_cache_entry, get_cache_entry
+
 from .sign_up import *
+from .menu_handler import *
 
 router = Router()
 router.message.filter(F.chat.type == "private")
@@ -27,7 +29,6 @@ async def set_bot_commands(bot: Bot):
 
 @router.message(Command(commands=["start"]))
 async def cmd_start(message: Message, state: FSMContext):
-    
     preload_message = await message.answer("Loading bot...")
     
     await state.clear()
@@ -54,8 +55,7 @@ async def cmd_start(message: Message, state: FSMContext):
 async def cmd_help(message: Message, state: FSMContext):
     await message.answer(
         text = f"🚀 *Welcome to {BOT_NAME} on Telegram!* 🚀\n\n",
-        parse_mode='Markdown',
-        reply_markup=main_menu
+        parse_mode='Markdown'
     )
     
 # Sign Up handlers
@@ -78,3 +78,34 @@ async def process_apikey_callback(message: Message, state: FSMContext):
 @router.message(WalletStates.setting_apisecret)
 async def process_apisecret_callback(message: Message, state: FSMContext):
     await apisecret_callback(message, state)
+
+
+# Menu Handler    
+@router.message(F.text.in_({'📊Funding', '📈Price'}))
+async def handle_funding_and_price(message: Message, state: FSMContext):
+    user_id = message.from_user.id
+    if get_user(user_id) is None:
+        await message.answer("Please set up your account first", reply_markup=generate_menu())
+        return
+    entry = message.text[1:].lower()
+    add_cache_entry(user_id, entry)
+    await message.answer(f"Please provide the short name symbol of the cryptocurrency you want to check {entry} rates for on Aevo platform (e.g. BTC for Bitcoin, ETH for Ethereum, etc.)", reply_markup=ReplyKeyboardRemove())
+
+@router.message(F.text =='🚸Tutorial')
+async def handle_tutorial(message: Message, state: FSMContext):
+    await message.answer("Please stick around for our tutorial video on how to use this bot.")
+
+@router.message(F.text ==  '⚡Assets')
+async def send_assets(message: Message):
+    await message.answer("We are collecting data, please wait...")
+    all_data = await get_alldata()
+    new_data = "\n".join(f"{i + 1}) {item}" for i, item in enumerate(all_data, start=0))
+    if all_data:
+        await message.answer(new_data)
+    else:
+        await message.answer("Oops, something went wrong. Try again!")
+
+@router.message()
+async def handle_all(message: Message, state: FSMContext):
+    
+    await catch_all(message)

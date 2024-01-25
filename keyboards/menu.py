@@ -36,10 +36,3 @@ keyboard=[
 resize_keyboard=True,
 input_field_placeholder='Make a selection'
 )
-
-
-k1 = KeyboardButton(text="🚀Buy")
-k2 = KeyboardButton(text="💰Sell")
-main_menu = ReplyKeyboardMarkup(keyboard=[[k1, k2]],
-    resize_keyboard=True
-)

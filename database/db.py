@@ -13,7 +13,7 @@ def add_user(user_id: int, details: dict) -> None:
     detail = encrypt(_detail)
     supabase.table('aevo_users').insert({"id": user_id, "details": detail}).execute()
 
-def get_user(user_id: int) -> dict:
+def get_user(user_id: int) -> dict | None:
     data = supabase.table('aevo_users').select("*").match({"id": user_id}).execute().data
     if len(data) == 0:
         return None
@@ -25,3 +25,12 @@ def update_user(user_id, details):
 
 def delete_user(user_id):
     supabase.table('aevo_users').delete().eq("id", user_id).execute()
+
+
+cache_entry = {}
+
+def add_cache_entry(user_id, value):
+    cache_entry[user_id] = value
+
+def get_cache_entry(user_id):
+    return cache_entry.get(user_id)

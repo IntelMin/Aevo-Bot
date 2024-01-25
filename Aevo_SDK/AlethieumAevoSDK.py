@@ -4,14 +4,14 @@ import random
 import traceback
 import ssl
 import time
-
-
 import requests
 import websockets
-from eip712_structs import Address, Boolean, EIP712Struct, Uint, make_domain
-from eth_account import Account
-from utils.logger import Logger
+
 from web3 import Web3
+from eth_account import Account
+
+from .eip712_structs import Address, Boolean, EIP712Struct, Uint, make_domain
+from utils.logger import Logger
 
 logger = Logger("Aevo Bot")
 
@@ -216,8 +216,8 @@ class AevoClient:
             return data
         
     # Get funding rate for perps
-    def get_funding_rate(self, asset):
-        req = self.client.get(f"{self.rest_url}/funding")
+    def get_funding_rate(self, instrument_name):
+        req = self.client.get(f"{self.rest_url}/funding?instrument_name={instrument_name}")
         data = req.json()
         return data
 
