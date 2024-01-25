@@ -21,7 +21,7 @@ def is_valid_eth_private_key(pk: str):
     return False  
 
 def is_valid_address(address: str):
-    return Web3.isAddress(address)
+    return Web3.is_address(address)
 
 def generate_eth_private_key():
     # A private key is a 256-bit number, which can be represented as a 32-byte hexadecimal

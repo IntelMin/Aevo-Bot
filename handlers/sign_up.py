@@ -13,7 +13,7 @@ router = Router()
 router.message.filter(F.chat.type == "private")
 
 class WalletStates(StatesGroup):
-    setting_address = State() 
+    setting_wallet = State() 
     setting_signature = State() 
     setting_apikey = State() 
     setting_apisecret = State() 

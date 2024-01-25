@@ -3,7 +3,7 @@ from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
 from aiogram.types import Message, ReplyKeyboardRemove, BotCommand, BotCommandScopeAllPrivateChats
-from keyboards.menu import generate_menu, home_button
+from keyboards.menu import generate_menu, home_button, main_menu
 from utils.config import BOT_TOKEN, BOT_NAME
 from database.db import get_user
 from .sign_up import *
@@ -33,29 +33,29 @@ async def cmd_start(message: Message, state: FSMContext):
     await state.clear()
 
     chat_id = message.from_user.id
+    username = message.from_user.username
+    username = username if username else 'user'
 
     user_record = get_user(chat_id)
     if user_record:
-        print('User exists')
-        username = message.from_user.username
-        preload_message.edit_text(text=f'Welcome back {username}', reply_markup=home_button())
-        return
+        await message.answer(text=f'Welcome back {username}', reply_markup=home_button)
         
-    greeting_message = "Let's get started! 💼\n\n"
-    keyboard = generate_menu() 
-    
-    await preload_message.edit_text(
-        text=greeting_message,
-        parse_mode='Markdown',
-        reply_markup=keyboard
-    )
+    else:    
+        greeting_message = "Let's get you started! 💼\n\n"
+        keyboard = generate_menu() 
+        
+        await preload_message.edit_text(
+            text=greeting_message,
+            parse_mode='Markdown',
+            reply_markup=keyboard
+        )
     
 @router.message(Command(commands=["help"]))
 async def cmd_help(message: Message, state: FSMContext):
     await message.answer(
-        text = "🚀 *Welcome to {BOT_NAME} on Telegram!* 🚀\n\n",
+        text = f"🚀 *Welcome to {BOT_NAME} on Telegram!* 🚀\n\n",
         parse_mode='Markdown',
-        reply_markup=ReplyKeyboardRemove()
+        reply_markup=main_menu
     )
     
 # Sign Up handlers
@@ -63,7 +63,7 @@ async def cmd_help(message: Message, state: FSMContext):
 async def create_wallet(callback: CallbackQuery, state: FSMContext):
     await sign_up_callback(callback, state)
 
-@router.message(WalletStates.setting_address)
+@router.message(WalletStates.setting_wallet)
 async def process_wallet_callback(message: Message, state: FSMContext):
     await wallet_callback(message, state)
 

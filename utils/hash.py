@@ -16,13 +16,14 @@ def derive_key_from_passphrase():
     key = base64.urlsafe_b64encode(kdf.derive(PASSPHRASE.encode()))
     return key
 
-def encrypt(text):
+def encrypt(text: str) -> str:
     key = derive_key_from_passphrase()
     cipher_suite = Fernet(key)
     encrypted_text = cipher_suite.encrypt(text.encode())
-    return encrypted_text
+    return encrypted_text.decode()
 
-def decrypt(encrypted_text):
+def decrypt(encrypted_text: str) -> str:
+    encrypted_text = encrypted_text.encode()
     key = derive_key_from_passphrase()
     cipher_suite = Fernet(key)
     decrypted_text = cipher_suite.decrypt(encrypted_text).decode()

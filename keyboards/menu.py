@@ -2,7 +2,7 @@ import re
 from aiogram import F, Router
 from aiogram.filters.callback_data import CallbackData
 from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
-from aiogram.types import KeyboardButton, ReplyKeyboardMarkup
+from aiogram.types import KeyboardButton, ReplyKeyboardMarkup,  ReplyKeyboardRemove
 from typing import Optional
 
 router = Router()
@@ -19,13 +19,27 @@ def generate_menu():
     markup.adjust(1)
     return markup.as_markup()
 
-def home_button():
-    markup = ReplyKeyboardMarkup(resize_keyboard= True)
-    item1 = KeyboardButton('📍Account')
-    item2 = KeyboardButton('⚡Assets')
-    item3 = KeyboardButton('💹Trade')
-    item4 = KeyboardButton('📊Funding')
-    item5 = KeyboardButton('📈Price')
-    markup.add(item1,item2,item3,item4, item5)
 
-    return markup
+home_button = ReplyKeyboardMarkup(
+keyboard=[
+    [
+        KeyboardButton(text="📍Account"),
+        KeyboardButton(text="⚡Assets"), 
+        KeyboardButton(text="💹Trade")
+    ],
+    [
+        KeyboardButton(text="📊Funding"), 
+        KeyboardButton(text="📈Price"), 
+        KeyboardButton(text="🚸Tutorial")
+    ]
+], 
+resize_keyboard=True,
+input_field_placeholder='Make a selection'
+)
+
+
+k1 = KeyboardButton(text="🚀Buy")
+k2 = KeyboardButton(text="💰Sell")
+main_menu = ReplyKeyboardMarkup(keyboard=[[k1, k2]],
+    resize_keyboard=True
+)

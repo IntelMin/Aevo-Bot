@@ -1,5 +1,6 @@
-
+import json
 from utils.config import SUPABASE_URL, SUPABASE_KEY
+from utils.hash import encrypt, decrypt
 from supabase.client import create_client, Client
 
 supabase_url = SUPABASE_URL or ""
@@ -7,12 +8,17 @@ supabase_key = SUPABASE_KEY or ""
 supabase: Client = create_client(supabase_url, supabase_key)
 
 
-def add_user(user_id, details):
-    supabase.table('aevo_users').insert({"id": user_id, "details": details}).execute()
+def add_user(user_id: int, details: dict) -> None:
+    _detail = json.dumps(details)
+    detail = encrypt(_detail)
+    supabase.table('aevo_users').insert({"id": user_id, "details": detail}).execute()
 
-def get_user(user_id):
+def get_user(user_id: int) -> dict:
     data = supabase.table('aevo_users').select("*").match({"id": user_id}).execute().data
-    return None if len(data) == 0 else data[0]
+    if len(data) == 0:
+        return None
+    data = decrypt(data[0]["details"])
+    return json.loads(data)
 
 def update_user(user_id, details):
     supabase.table('aevo_users').update({"details": details}).eq("id", user_id).execute()
