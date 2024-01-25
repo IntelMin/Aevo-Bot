@@ -41,8 +41,6 @@ CONFIG = {
     },
 }
 
-# timestamp = int(time.time())
-
 
 class Order(EIP712Struct):
     maker = Address()

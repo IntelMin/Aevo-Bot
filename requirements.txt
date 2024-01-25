@@ -1,6 +1,21 @@
-aiogram @ https://github.com/aiogram/aiogram/archive/refs/heads/dev-3.x.zip
+aiogram @ https://github.com/aiogram/aiogram/archive/refs/heads/dev-3.x.zip     
+aiohttp==3.9.1  
 cryptography==39.0.1
+eip712==0.2.3   
+eth-abi==4.2.1  
+eth-account==0.10.0
+eth-hash==0.6.0 
+eth-keyfile==0.7.0
+eth-keys==0.5.0 
+eth-typing==3.5.2
+eth-utils==2.3.1
+hexbytes==0.3.1 
+magic-filter==1.0.12
+requests==2.31.0
+supabase==2.3.4 
+virtualenv==20.25.0
+web3==6.7.0     
+websockets==11.0.3
 python-dotenv==1.0.0
 Requests==2.31.0
 rich==13.5.2
-web3==6.7.0
