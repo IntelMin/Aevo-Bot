@@ -59,7 +59,7 @@ class AevoClient:
         wallet_address="",
         api_key="",
         api_secret="",
-        env="testnet",
+        env="mainnet",
         rest_headers={},
     ):
         self.signing_key = signing_key

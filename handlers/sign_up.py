@@ -95,8 +95,8 @@ async def apisecret_callback(message: Message, state: FSMContext):
 async def validate_api_key_and_secret(user_id):
     import requests
 
-    # url = "https://api.aevo.xyz/auth"
-    url = "https://api-testnet.aevo.xyz/auth" # Testnet
+    url = "https://api.aevo.xyz/auth"
+    # url = "https://api-testnet.aevo.xyz/auth" # Testnet
 
     key = sign_up[user_id]['api_key']
     secret = sign_up[user_id]['api_secret']

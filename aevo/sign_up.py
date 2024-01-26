@@ -10,8 +10,8 @@ headers = {
   "content-type": "application/json"
 }
 async def register(account, signer, account_sig, signer_sig):
-    # url = "https://api.aevo.xyz/register" # Mainnet
-    url = "https://api-testnet.aevo.xyz/register" # Testnet
+    url = "https://api.aevo.xyz/register" # Mainnet
+    # url = "https://api-testnet.aevo.xyz/register" # Testnet
     payload = {
       "account": account,
       "signing_key": signer,
