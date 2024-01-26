@@ -14,7 +14,7 @@ dp = Dispatcher()
 
 async def main():
     
-    log.debug("Bot initializing.")
+    log.debug("Testnet Bot initializing.")
     
     await common.set_bot_commands(bot)
     
