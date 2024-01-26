@@ -77,13 +77,13 @@ async def apisecret_callback(message: Message, state: FSMContext):
         res = await message.answer("Aevo sign up complete. Updating details...")
         add_user(user_id, sign_up[user_id])
 
-        await res.edit_text(
+        await res.answer(
             (
                 f"Wallet address: `{sign_up[user_id]['wallet_address']}`\n"
                 f"✅ Account loaded successfully!\n\n"
             ),
             parse_mode='Markdown',
-            reply_markup=home_button()
+            reply_markup=home_button
         )
 
     else:
