@@ -30,23 +30,19 @@ async def get_info_callback(callback: CallbackQuery, state: FSMContext):
                                                   "In this step, you can set wallet address")
                     await callback.message.answer_photo(
                         photo=photo_guide_1,
-                        caption="Please click button 'launch Exchange' in the upper right corner.\n",
-                        reply_markup=ForceReply(selective=True)
+                        caption="Please click button 'launch Exchange' in the upper right corner.\n"
                     )
                     await callback.message.answer_photo(
                         photo=photo_guide_2,
-                        caption="Please click button 'Connect Wallet' in the upper right corner.\n",
-                        reply_markup=ForceReply(selective=True)
+                        caption="Please click button 'Connect Wallet' in the upper right corner.\n"
                     )
                     await callback.message.answer_photo(
                         photo=photo_guide_3,
                         caption="If Wallet is not installed, install Wallet.\n"
-                            "You can install Matamask or Coinbase extension.",
-                        reply_markup=ForceReply(selective=True)
+                            "You can install Matamask or Coinbase extension."
                     )
                     await callback.message.answer_photo(
-                        photo=photo_set_address,
-                        reply_markup=ForceReply(selective=True)
+                        photo=photo_set_address
                     )
                     keyboard = key_menu() 
                     await callback.message.answer(
@@ -72,20 +68,16 @@ async def get_signinKey_callback(callback: CallbackQuery, state: FSMContext):
                     photo_get_signinkey = URLInputFile(info_sign_key)
                     await callback.message.answer_photo(
                         photo=photo_guide_info1,
-                        caption="You can simply access the API at the following URL: https://api-docs.aevo.xyz/reference/overview.\n",
-                        reply_markup=ForceReply(selective=True)
+                        caption="You can simply access the API at the following URL: https://api-docs.aevo.xyz/reference/overview.\n"
                     )
                     await callback.message.answer_photo(
-                        photo=photo_guide_info2,
-                        reply_markup=ForceReply(selective=True)
+                        photo=photo_guide_info2
                     )
                     await callback.message.answer_photo(
-                        photo=photo_guide_info_sign,
-                        reply_markup=ForceReply(selective=True)
+                        photo=photo_guide_info_sign
                     )
                     await callback.message.answer_photo(
-                        photo=photo_get_signinkey,
-                        reply_markup=ForceReply(selective=True)
+                        photo=photo_get_signinkey
                     )
                     keyboard = key_menu() 
                     await callback.message.answer(
@@ -111,20 +103,16 @@ async def get_api_callback(callback: CallbackQuery, state: FSMContext):
                     photo_get_api = URLInputFile(info_api_key)
                     await callback.message.answer_photo(
                         photo=photo_guide_info1,
-                        caption="You can simply access the API at the following URL: https://api-docs.aevo.xyz/reference/overview.\n",
-                        reply_markup=ForceReply(selective=True)
+                        caption="You can simply access the API at the following URL: https://api-docs.aevo.xyz/reference/overview.\n"
                     )
                     await callback.message.answer_photo(
-                        photo=photo_guide_info2,
-                        reply_markup=ForceReply(selective=True)
+                        photo=photo_guide_info2
                     )
                     await callback.message.answer_photo(
-                        photo=photo_guide_info_api,
-                        reply_markup=ForceReply(selective=True)
+                        photo=photo_guide_info_api
                     )
                     await callback.message.answer_photo(
-                        photo=photo_get_api,
-                        reply_markup=ForceReply(selective=True)
+                        photo=photo_get_api
                     )
                     keyboard = key_menu() 
                     await callback.message.answer(

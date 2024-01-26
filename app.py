@@ -4,7 +4,6 @@ from aiogram import Bot, Dispatcher
 from utils.logger import Logger
 from utils.config import BOT_TOKEN, BOT_NAME
 from handlers import common
-from services.transaction import initalize_queue
 
 log = Logger(BOT_NAME)
 log.debug("Bot is loading")
