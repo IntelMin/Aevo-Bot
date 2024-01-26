@@ -3,7 +3,7 @@ from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery, ReplyKeyboardRemove
 
-from keyboards.menu import generate_menu, home_button, account_menu, trade_menu
+from keyboards.menu import *
 from utils.config import BOT_NAME
 from database.db import get_user
 from database.cache import add_message_entry, delete_trade_cache
@@ -12,6 +12,7 @@ from .sign_up import *
 from .menu_handler import *
 from .account_handler import account
 from .trade_handler import *
+from .get_Info import *
 
 router = Router()
 router.message.filter(F.chat.type == "private")
@@ -45,7 +46,7 @@ async def cmd_start(message: Message, state: FSMContext):
         await message.answer(text=f'Welcome back {username}', reply_markup=home_button)
         
     else:    
-        greeting_message = "Let's get you started! 💼\n\n"
+        greeting_message = "Let's get started! 💼\n\n"
         keyboard = generate_menu() 
         
         await preload_message.edit_text(
@@ -56,11 +57,39 @@ async def cmd_start(message: Message, state: FSMContext):
     
 @router.message(Command(commands=["help"]))
 async def cmd_help(message: Message, state: FSMContext):
-    await message.answer(
-        text = f"🚀 *Welcome to {BOT_NAME} on Telegram!* 🚀\n\n",
-        parse_mode='Markdown'
-    )
+
+    preload_message = await message.answer(f"🚀 *Welcome to {BOT_NAME} on Telegram!* 🚀\n\n")
     
+    await state.clear()
+
+    chat_id = message.from_user.id
+    username = message.from_user.username
+    username = username if username else 'user'
+    user_record = get_user(chat_id)
+    if user_record:
+        await message.answer(text=f'Welcome back {username}', reply_markup=home_button)
+        
+    else:    
+        greeting_message = "You can know in here how to get wallet address, SignIngKey, ApiKey and ApiSecret 💼\n\n"
+        keyboard = help_menu() 
+        
+        await preload_message.edit_text(
+            text=greeting_message,
+            parse_mode='Markdown',
+            reply_markup=keyboard
+        )
+
+# Get Key handlers
+@router.callback_query(F.data == "get_key")
+async def get_info(callback: CallbackQuery, state: FSMContext):
+    await get_info_callback(callback, state)           
+@router.callback_query(F.data == "get_signin_key")
+async def get_signinKey(callback: CallbackQuery, state: FSMContext):
+    await get_signinKey_callback(callback, state)   
+@router.callback_query(F.data == "get_api_info")
+async def get_api(callback: CallbackQuery, state: FSMContext):
+    await get_api_callback(callback, state)   
+
 # Sign Up handlers
 @router.callback_query(F.data == "aevo_signup")
 async def create_wallet(callback: CallbackQuery, state: FSMContext):

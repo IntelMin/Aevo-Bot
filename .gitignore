@@ -9,6 +9,7 @@ api/.env
 Thumbs.db
 *.zip
 
+/aevo_guide
 # Next.js / Node.js
 api/node_modules/
 /.next/
