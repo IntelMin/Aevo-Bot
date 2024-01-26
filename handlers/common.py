@@ -62,22 +62,17 @@ async def cmd_help(message: Message, state: FSMContext):
     
     await state.clear()
 
-    chat_id = message.from_user.id
     username = message.from_user.username
     username = username if username else 'user'
-    user_record = get_user(chat_id)
-    if user_record:
-        await message.answer(text=f'Welcome back {username}', reply_markup=home_button)
-        
-    else:    
-        greeting_message = "You can know in here how to get wallet address, SignIngKey, ApiKey and ApiSecret 💼\n\n"
-        keyboard = help_menu() 
-        
-        await preload_message.edit_text(
-            text=greeting_message,
-            parse_mode='Markdown',
-            reply_markup=keyboard
-        )
+
+    greeting_message = "You can know in here how to get wallet address, SignIngKey, ApiKey and ApiSecret 💼\n\n"
+    keyboard = help_menu() 
+    
+    await preload_message.edit_text(
+        text=greeting_message,
+        parse_mode='Markdown',
+        reply_markup=keyboard
+    )
 
 # Get Key handlers
 @router.callback_query(F.data == "get_key")

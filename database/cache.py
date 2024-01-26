@@ -1,4 +1,4 @@
-
+from typing import Union
 message_entry = {}
 
 def add_message_entry(user_id, value):
@@ -12,7 +12,7 @@ trade_cache = {}
 def add_trade_cache(user_id, key, value):
     trade_cache[user_id] = {**trade_cache.get(user_id, {}), key: value}
 
-def get_trade_cache(user_id, key) -> str | None:
+def get_trade_cache(user_id, key) -> Union[str, None]:
     return trade_cache.get(user_id, {}).get(key)
 
 def delete_trade_cache(user_id):
