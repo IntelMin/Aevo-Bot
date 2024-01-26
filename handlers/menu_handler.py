@@ -13,7 +13,11 @@ def validate_user(user_id: int):
         return False
     return user
 
-async def catch_all(message: Message):
+
+class MenuState(StatesGroup):
+    home_state = State() 
+
+async def menu(message: Message):
     await message.answer("Please wait...", reply_markup=ReplyKeyboardRemove())
 
     user_id = message.from_user.id

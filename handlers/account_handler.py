@@ -9,9 +9,9 @@ from utils.response.account_response import *
 from Aevo_SDK.AlethieumAevoSDK import AevoClient
 
 
-async def account(callback: CallbackQuery, state: FSMContext):
+async def account(callback: CallbackQuery):
     request = callback.data.split(':')[1]
-    user_id = callback.message.from_user.id
+    user_id = callback.from_user.id
     user:dict = get_user(user_id)
     aevo = AevoClient(**user)
 

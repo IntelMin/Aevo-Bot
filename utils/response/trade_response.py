@@ -35,7 +35,7 @@ def process_trade_cache(user_id):
     limit_price = get_trade_cache(user_id, 'limit_price')
     order_type = "Market Order" if request == 'market_order' else "Limit Order"
     
-    res_text +=  f"Please confirm the order details below (Yes/No)\n\n"
+    res_text =  f"Please confirm the order details below (Yes/No)\n\n"
     res_text += f"Asset: {asset}\n"
     res_text += f"Direction: {_trade_direction}\n"
     res_text += f"Quantity: {quantity} {asset} Contracts\n"

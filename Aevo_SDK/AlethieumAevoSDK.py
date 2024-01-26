@@ -208,10 +208,10 @@ class AevoClient:
     def get_instrument(self, asset, type="PERPETUAL"):
         req = self.client.get(f"{self.rest_url}/markets?asset={asset}&instrument_type={type}")
         data = req.json()
-        if type == "PERPETUAL":
-            return data[0]
-        else:
+        if 'error' in data or type != "PERPETUAL":
             return data
+        else:
+            return data[0]
         
     # Get funding rate for perps
     def get_funding_rate(self, instrument_name):

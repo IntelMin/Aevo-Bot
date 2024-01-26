@@ -6,6 +6,8 @@ def respond_to_trade_history(response_body):
     response += f"Total Number of Trades: {count}\n\n"
 
     trade_history = response_body.get('trade_history', [])
+    if len(trade_history) == 0:
+        return "You have no trade history between the specified time period"
     for trade in trade_history:
         response += f"Trade ID: {trade.get('trade_id', 'N/A')}\n"
         response += f"Order ID: {trade.get('order_id', 'N/A')}\n"
@@ -32,6 +34,8 @@ def respond_to_order_history(response_body):
     response += f"Total Number of Orders: {count}\n\n"
 
     order_history = response_body.get('order_history', [])
+    if len(order_history) == 0:
+        return "You have no order history between the specified time period"
     for order in order_history:
         response += f"Order ID: {order.get('order_id', 'N/A')}\n"
         response += f"Order Type: {order.get('order_type', 'N/A')}\n"
@@ -76,6 +80,8 @@ def respond_to_account_positions(response_body):
     response = f"Account Positions\n\n"
 
     positions = response_body.get('positions', [])
+    if len(positions) == 0:
+        return "You have no open positions at the moment"
     for position in positions:
         instrument_name = position.get('instrument_name', 'N/A')
         instrument_type = position.get('instrument_type', 'N/A')

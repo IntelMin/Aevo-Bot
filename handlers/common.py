@@ -6,10 +6,12 @@ from aiogram.types import Message, CallbackQuery, ReplyKeyboardRemove
 from keyboards.menu import generate_menu, home_button, account_menu, trade_menu
 from utils.config import BOT_NAME
 from database.db import get_user
-from database.cache import add_message_entry
+from database.cache import add_message_entry, delete_trade_cache
 
 from .sign_up import *
 from .menu_handler import *
+from .account_handler import account
+from .trade_handler import *
 
 router = Router()
 router.message.filter(F.chat.type == "private")
@@ -91,6 +93,8 @@ async def handle_funding_and_price(message: Message, state: FSMContext):
     entry = message.text[1:].lower()
     add_message_entry(user_id, entry)
     await message.answer(f"Please provide the short name symbol of the cryptocurrency you want to check {entry} rates for on Aevo platform (e.g. BTC for Bitcoin, ETH for Ethereum, etc.)", reply_markup=ReplyKeyboardRemove())
+    # await state.set_data({'entry': entry})
+    await state.set_state(MenuState.home_state)
 
 @router.message(F.text =='🚸Tutorial')
 async def handle_tutorial(message: Message, state: FSMContext):
@@ -108,6 +112,7 @@ async def handle_account(message: Message, state: FSMContext):
     if request == 'account':
         await message.answer(f"Hello {username}, welcome to your account.\nPlease select an option from the menu below.", reply_markup=account_menu())
     else:
+        delete_trade_cache(user_id)
         await message.answer(f"Hello {username}, welcome to the trade modal.\nPlease select an option from the menu below.", reply_markup=trade_menu())
 
 @router.message(F.text ==  '⚡Assets')
@@ -120,13 +125,24 @@ async def send_assets(message: Message):
     else:
         await message.answer("Oops, something went wrong. Try again!")
 
-@router.message()
-async def handle_all(message: Message, state: FSMContext):
-    await catch_all(message)
-
-
-# Account Handler
+# Account and Trade Handler
 @router.callback_query(F.data.startswith("aevo_account:"))
 async def handle_account_callback(callback: CallbackQuery, state: FSMContext):
-    return
-    await account_callback(callback, state)
+    await account(callback)
+
+@router.callback_query(F.data.startswith("aevo_trade:"))
+async def handle_trade_callback(callback: CallbackQuery, state: FSMContext):
+    await trade(callback, state)
+
+@router.message(TradeState.setting_order)
+async def handle_orders_callback(message: Message, state: FSMContext):
+    await handle_orders(message, state)
+
+@router.message(TradeState.setting_order_edit)
+async def handle_order_edits_callback(message: Message, state: FSMContext):
+    await handle_order_edits(message, state)
+
+@router.message(MenuState.home_state)
+async def handle_all(message: Message, state: FSMContext):
+    await menu(message)
+
