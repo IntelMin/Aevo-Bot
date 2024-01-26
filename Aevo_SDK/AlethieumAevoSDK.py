@@ -284,9 +284,27 @@ class AevoClient:
         req = self.client.get(f"{self.rest_url}/portfolio", headers=self.rest_headers)
         return req.json()
 
+    def rest_get_positions(self):
+        req = self.client.get(f"{self.rest_url}/positions", headers=self.rest_headers)
+        return req.json()
+
+    def rest_get_order_history(self):
+        req = self.client.get(f"{self.rest_url}/order-history", headers=self.rest_headers)
+        return req.json()
+    
+    def rest_get_trade_history(self):
+        req = self.client.get(f"{self.rest_url}/trade-history", headers=self.rest_headers)
+        return req.json()
+
     def rest_get_open_orders(self):
         req = self.client.get(
             f"{self.rest_url}/orders", json={}, headers=self.rest_headers
+        )
+        return req.json()
+    
+    def rest_get_open_order(self, order_id):
+        req = self.client.get(
+            f"{self.rest_url}/orders/{order_id}", json={}, headers=self.rest_headers
         )
         return req.json()
 

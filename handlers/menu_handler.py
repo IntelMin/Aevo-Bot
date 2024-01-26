@@ -2,7 +2,8 @@ from aiogram.types import Message,  ReplyKeyboardRemove
 from aiogram.filters.callback_data import CallbackData
 from aiogram.fsm.state import StatesGroup, State
 
-from database.db import get_user, get_cache_entry, add_cache_entry
+from database.db import get_user
+from database.cache import add_message_entry, get_message_entry
 from keyboards.menu import home_button, generate_menu
 from Aevo_SDK.AlethieumAevoSDK import AevoClient
 
@@ -16,7 +17,7 @@ async def catch_all(message: Message):
     await message.answer("Please wait...", reply_markup=ReplyKeyboardRemove())
 
     user_id = message.from_user.id
-    request = get_cache_entry(user_id)
+    request = get_message_entry(user_id)
     if request is None:
         await message.answer("Please make a selection from the menu", reply_markup=home_button)
         return
@@ -52,7 +53,7 @@ async def catch_all(message: Message):
         await message.answer(f'Invalid query {query}', reply_markup=home_button)
         return
     
-    add_cache_entry(user_id, None)
+    add_message_entry(user_id, None)
 
 
 async def get_alldata():

@@ -26,11 +26,3 @@ def update_user(user_id, details):
 def delete_user(user_id):
     supabase.table('aevo_users').delete().eq("id", user_id).execute()
 
-
-cache_entry = {}
-
-def add_cache_entry(user_id, value):
-    cache_entry[user_id] = value
-
-def get_cache_entry(user_id):
-    return cache_entry.get(user_id)

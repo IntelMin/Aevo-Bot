@@ -1,0 +1,11 @@
+# response += f"Initial Margin: {order['initial_margin']}\n"
+# response += f"Option Type: {order['option_type']}\n"
+# response += f"Implied Volatility: {order['iv']}\n"
+# response += f"Expiry: {order['expiry']}\n"
+# response += f"Strike Price: {order['strike']}\n"
+# response += f"Time Created: {order['created_timestamp']}\n"
+# response += f"Stop: {order['stop']}\n"
+# response += f"Trigger: {order.get('trigger', 'N/A')}\n"  # 'trigger' might not be present in all orders
+# response += f"Close Position: {order['close_position']}\n"
+# response += f"Isolated Margin: {order['isolated_margin']}\n\n"
+# response += f"Timestamp: {order['timestamp']}\n"

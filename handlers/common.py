@@ -3,9 +3,10 @@ from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery, ReplyKeyboardRemove
 
-from keyboards.menu import generate_menu, home_button
+from keyboards.menu import generate_menu, home_button, account_menu, trade_menu
 from utils.config import BOT_NAME
-from database.db import get_user, add_cache_entry, get_cache_entry
+from database.db import get_user
+from database.cache import add_message_entry
 
 from .sign_up import *
 from .menu_handler import *
@@ -88,12 +89,26 @@ async def handle_funding_and_price(message: Message, state: FSMContext):
         await message.answer("Please set up your account first", reply_markup=generate_menu())
         return
     entry = message.text[1:].lower()
-    add_cache_entry(user_id, entry)
+    add_message_entry(user_id, entry)
     await message.answer(f"Please provide the short name symbol of the cryptocurrency you want to check {entry} rates for on Aevo platform (e.g. BTC for Bitcoin, ETH for Ethereum, etc.)", reply_markup=ReplyKeyboardRemove())
 
 @router.message(F.text =='🚸Tutorial')
 async def handle_tutorial(message: Message, state: FSMContext):
     await message.answer("Please stick around for our tutorial video on how to use this bot.")
+
+@router.message(F.text.in_({'📍Account', '💹Trade'}))
+async def handle_account(message: Message, state: FSMContext):
+    user_id = message.from_user.id
+    username = message.from_user.username
+    username = username if username else 'user'
+    if get_user(user_id) is None:
+        await message.answer("Please set up your account first", reply_markup=generate_menu())
+        return
+    request = message.text[1:].lower()
+    if request == 'account':
+        await message.answer(f"Hello {username}, welcome to your account.\nPlease select an option from the menu below.", reply_markup=account_menu())
+    else:
+        await message.answer(f"Hello {username}, welcome to the trade modal.\nPlease select an option from the menu below.", reply_markup=trade_menu())
 
 @router.message(F.text ==  '⚡Assets')
 async def send_assets(message: Message):
@@ -107,5 +122,11 @@ async def send_assets(message: Message):
 
 @router.message()
 async def handle_all(message: Message, state: FSMContext):
-    
     await catch_all(message)
+
+
+# Account Handler
+@router.callback_query(F.data.startswith("aevo_account:"))
+async def handle_account_callback(callback: CallbackQuery, state: FSMContext):
+    return
+    await account_callback(callback, state)
