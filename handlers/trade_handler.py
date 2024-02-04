@@ -103,7 +103,7 @@ async def handle_orders(message: Message, state: FSMContext):
         await state.set_state(TradeState.setting_order)
 
     elif get_trade_cache(user_id, 'limit_price') is None and request == 'limit_order':
-        # _input = float(user_input)
+        _input = float(user_input)
         add_trade_cache(user_id, 'limit_price', user_input)
         asset = get_trade_cache(user_id, 'asset')
         is_buy = get_trade_cache(user_id, 'is_buy')
@@ -114,7 +114,7 @@ async def handle_orders(message: Message, state: FSMContext):
         await state.set_state(TradeState.setting_order)
 
     elif get_trade_cache(user_id, 'quantity') is None:
-        # _input = float(user_input)
+        _input = float(user_input)
         add_trade_cache(user_id, 'quantity', user_input)
         res_text = process_trade_cache(user_id)
         await message.answer(res_text, reply_markup=two_way_button("Yes", "No"))

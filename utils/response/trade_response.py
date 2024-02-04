@@ -7,7 +7,7 @@ def process_order_data(order):
     response += f"Asset Type: {order['instrument_type']}\n"
     response += f"Order Type: {order['order_type']}\n"
     response += f"Trade Direction: {order['side']}\n"
-    response += f"Quantity of Contracts: {int(order['amount']) / 10 ** 6}\n"
+    response += f"Quantity of Contracts: {float(order['amount']) / 10 ** 6}\n"
     response += f"Limit Price for Order: {order['price']}\n"
     response += f"Avg. Entry Price: {order['avg_price']}\n"
     response += f"Filled Amount: {order['filled']}\n"
@@ -38,7 +38,7 @@ def process_trade_cache(user_id):
     res_text =  f"Please confirm the order details below (Yes/No)\n\n"
     res_text += f"Asset: {asset}\n"
     res_text += f"Direction: {_trade_direction}\n"
-    res_text += f"Quantity: {quantity} {asset} Contracts\n"
+    res_text += f"Quantity: {quantity} {asset}\n"
     res_text += f"Order Type: {order_type}\n"
     res_text += f"Limit Price: ${limit_price}\n" if request == 'limit_order' else ""
     

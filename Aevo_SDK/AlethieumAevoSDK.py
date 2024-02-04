@@ -427,9 +427,14 @@ class AevoClient:
         decimals=10**6,
         # timestamp=int(time.time()),
     ):
+        print(quantity, type(quantity), "Quantity: create_order_rest_json")
+        print(limit_price, type(limit_price), "Limit Price: create_order_rest_json")
+        limit_price = float(limit_price)
+        # quantity = float(quantity)
         salt, signature = self.sign_order(
             instrument_id, is_buy, limit_price, quantity, decimals=decimals
         )
+        print(quantity, type(quantity), "Quantity: create_order_rest_json")
         return {
             "maker": self.wallet_address,
             "is_buy": is_buy,

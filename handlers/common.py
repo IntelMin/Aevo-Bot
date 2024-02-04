@@ -160,11 +160,11 @@ async def handle_trade_callback(callback: CallbackQuery, state: FSMContext):
 
 @router.message(TradeState.setting_order)
 async def handle_orders_callback(message: Message, state: FSMContext):
-    try:
-        await handle_orders(message, state)
-    except Exception as e:
-        print(e)
-        await message.answer(f"An error occured while processing your request\n`{e}`", reply_markup=home_button, parse_mode='Markdown')
+    # try:
+    await handle_orders(message, state)
+    # except Exception as e:
+    #     print(e)
+    #     await message.answer(f"An error occured while processing your request\n`{e}`", reply_markup=home_button, parse_mode='Markdown')
 
 @router.message(TradeState.setting_order_edit)
 async def handle_order_edits_callback(message: Message, state: FSMContext):
