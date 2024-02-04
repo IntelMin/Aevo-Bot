@@ -38,7 +38,7 @@ async def trade(callback: CallbackQuery, state: FSMContext):
             await res(f"There was an error processing this request\n{response['error']}")
             return
         message = respond_to_open_orders(response)
-        await res(message, reply_markup=home_button)
+        await res(message, reply_markup=home_button, parse_mode='Markdown')
     
     elif request == 'cancel_orders':
         response = aevo.rest_cancel_all_orders()
@@ -72,7 +72,9 @@ async def handle_order_edits(message: Message, state: FSMContext):
         if 'error' in response:
             await message.answer(f"There was an error processing this request\n{response['error']}", reply_markup=home_button)
             return
-        await message.answer(f"Order with order_id: {order_id} has been cancelled successfully", reply_markup=home_button)
+        res = f"Order has been cancelled successfully\nBelow were the Order details\n\n"
+        res+=process_order_data(response)
+        await message.answer(res, reply_markup=home_button)
 
 async def handle_orders(message: Message, state: FSMContext):
     user_id = message.from_user.id
@@ -134,12 +136,12 @@ async def handle_orders(message: Message, state: FSMContext):
             data = aevo.rest_create_order(**aevo_trade_data)
         if 'error' in data:
             delete_trade_cache(user_id)
-            await message.answer(f"There was an error processing your trade request\n{data['error']}", reply_markup=home_button)
+            await message.answer(f"There was an error processing your trade request 🥹\n{data['error']}", reply_markup=home_button)
             return
-        res_text = f"Here are your order details \n\n"
+        res_text = f"Order is Successful 🎉 \nHere are your order details \n\n"
         res_text += process_order_data(data)
         delete_trade_cache(user_id)
-        await message.answer(res_text, reply_markup=home_button)
+        await message.answer(res_text, reply_markup=home_button, parse_mode='Markdown')
             
 
     

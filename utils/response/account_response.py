@@ -10,7 +10,7 @@ def respond_to_trade_history(response_body):
         return "You have no trade history between the specified time period"
     for trade in trade_history:
         response += f"Trade ID: {trade.get('trade_id', 'N/A')}\n"
-        response += f"Order ID: {trade.get('order_id', 'N/A')}\n"
+        response += f"Order ID: `{trade.get('order_id', 'N/A')}`\n"
         response += f"Trade Type: {trade.get('trade_type', 'N/A')}\n"
         response += f"Asset: {trade.get('asset', 'ETH')}\n"
         response += f"Asset Ticker: {trade['instrument_name']}\n"
@@ -37,13 +37,15 @@ def respond_to_order_history(response_body):
     if len(order_history) == 0:
         return "You have no order history between the specified time period"
     for order in order_history:
+        limit_order = order.get('order_type') =='limit'
         response += f"Order ID: `{order.get('order_id', 'N/A')}`\n"
         response += f"Order Type: {order.get('order_type', 'N/A').capitalize()}\n"
         response += f"Asset Ticker: {order.get('instrument_name', 'N/A')}\n"
         response += f"Asset Type: {order.get('instrument_type', 'N/A')}\n"
         response += f"Trade Direction: {order.get('side', 'N/A').capitalize()}\n"
         response += f"Quantity of Contracts: {order['amount']}\n"
-        response += f"Price: ${order.get('price', '0')}\n"
+        if limit_order:
+            response += f"Price: ${order.get('price', '0')}\n"
         response += f"Amount Filled: {order.get('filled', 'N/A')}\n"
         response += f"Error: {order.get('error', 'N/A')}\n"
         response += f"Order Status: {order.get('order_status', 'N/A')}\n"

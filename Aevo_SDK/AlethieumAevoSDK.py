@@ -265,7 +265,6 @@ class AevoClient:
         req = self.client.delete(
             f"{self.rest_url}/orders/{order_id}", headers=self.rest_headers
         )
-        logger.info(req.json())
         return req.json()
 
     def rest_get_account(self):
@@ -427,10 +426,9 @@ class AevoClient:
         decimals=10**6,
         # timestamp=int(time.time()),
     ):
-        print(quantity, type(quantity), "Quantity: create_order_rest_json")
-        print(limit_price, type(limit_price), "Limit Price: create_order_rest_json")
-        limit_price = float(limit_price)
-        # quantity = float(quantity)
+        # Float values from string or maintain as int (market orders)
+        limit_price = limit_price if type(limit_price) is int else float(limit_price)
+        quantity = float(quantity)
         salt, signature = self.sign_order(
             instrument_id, is_buy, limit_price, quantity, decimals=decimals
         )

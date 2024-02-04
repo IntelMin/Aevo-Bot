@@ -50,7 +50,7 @@ async def account(callback: CallbackQuery):
         await process_long_message(message, 'Trade ID', res)
 
 async def process_long_message(message: str, find: str, res):
-    max_message_length = 4000
+    max_message_length = 4096
     while len(message) > max_message_length or len(message) > 0:
         if len(message) < max_message_length:
             await res(message, reply_markup=home_button, parse_mode='Markdown')
