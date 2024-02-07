@@ -56,17 +56,22 @@ async def handle_order_edits(message: Message, state: FSMContext):
     request = get_trade_cache(user_id, 'request')
 
     if request == 'edit_order':
-        return # There is a lot of gray area on how this should be handled
-        # order = aevo.rest_get_open_order(order_id)
-        # if 'error' in order:
-        #     delete_trade_cache(user_id)
-        #     await message.answer(f"There was an error processing this request\n{order['error']}", reply_markup=home_button)
-        #     return
-        # add_trade_cache(user_id, 'instrument_id', order['instrument_id'])
-        # add_trade_cache(user_id, 'is_buy', order['side'])
-        # add_trade_cache(user_id, 'order_id', order_id)
-        # await message.answer('Please enter the name of the asset you wish to trade', reply_markup=ReplyKeyboardRemove())
-        # await state.set_state(TradeState.setting_order)
+        order = aevo.rest_get_open_order(order_id)
+        if 'error' in order:
+            delete_trade_cache(user_id)
+            await message.answer(f"There was an error processing this request\n{order['error']}", reply_markup=home_button)
+            return
+        elif order['order_status'] != 'opened':
+            delete_trade_cache(user_id)
+            await message.answer(f"The order with id {order_id} is not active", reply_markup=home_button)
+            return
+        add_trade_cache(user_id, 'order_id', order_id)
+        add_trade_cache(user_id, 'instrument_id', order['instrument_id'])
+        is_buy = True if order['side'] == 'buy' else False
+        add_trade_cache(user_id, 'is_buy', is_buy)
+        await message.answer(f"Order with id {order_id} is active\nInitial Limit Price: {order['price']}\nInitial Order Size: {order['amount']}\n\nPlease enter the new limit price", reply_markup=ReplyKeyboardRemove())
+        await state.set_state(TradeState.setting_order_edit)
+        
     else:
         response = aevo.rest_cancel_order(order_id)
         if 'error' in response:
@@ -92,21 +97,22 @@ async def handle_orders(message: Message, state: FSMContext):
             return
         add_trade_cache(user_id, 'instrument_id', response['instrument_id'])
         add_trade_cache(user_id, 'asset', user_input)
-        await message.answer(f'Price of {user_input} ({response["instrument_name"]}) is ${response["index_price"]}\nPlease enter what trade direction the order should take? (Buy/Sell)', reply_markup=two_way_button())
+        await message.answer(f'Price of {user_input} ({response["instrument_name"]}) is ${response["index_price"]}\nMinimum Order Value: {response["min_order_value"]}\nMaximum Order Value: {response["max_order_value"]}\n\n Please enter what trade direction the order should take? (Buy/Sell)', reply_markup=two_way_button())
         await state.set_state(TradeState.setting_order)
 
     elif get_trade_cache(user_id, 'is_buy') is None:
         _input = False if user_input.lower() == "sell" else True
         add_trade_cache(user_id, 'is_buy', _input)
         asset = get_trade_cache(user_id, 'asset')
-        res_text = f"You have selected {user_input} as trade direction\n"
-        res_text +=  f"Please enter the limit price to {user_input} {asset}" if request == 'limit_order' else f"Please enter the quantity of {asset} to {user_input}"
+        dir = 'Buy' if _input else "Sell"
+        res_text = f"You have selected {dir} as trade direction\n"
+        res_text +=  f"Please enter the limit price to {dir} {asset}" if request == 'limit_order' else f"Please enter the quantity of {asset} to {dir}"
         await message.answer(res_text, reply_markup=ReplyKeyboardRemove())
         await state.set_state(TradeState.setting_order)
 
     elif get_trade_cache(user_id, 'limit_price') is None and request == 'limit_order':
         _input = float(user_input)
-        add_trade_cache(user_id, 'limit_price', user_input)
+        add_trade_cache(user_id, 'limit_price', _input)
         asset = get_trade_cache(user_id, 'asset')
         is_buy = get_trade_cache(user_id, 'is_buy')
         _trade = 'buy' if is_buy else 'sell'
@@ -117,7 +123,7 @@ async def handle_orders(message: Message, state: FSMContext):
 
     elif get_trade_cache(user_id, 'quantity') is None:
         _input = float(user_input)
-        add_trade_cache(user_id, 'quantity', user_input)
+        add_trade_cache(user_id, 'quantity', _input)
         res_text = process_trade_cache(user_id)
         await message.answer(res_text, reply_markup=two_way_button("Yes", "No"))
         await state.set_state(TradeState.setting_order)
@@ -144,4 +150,42 @@ async def handle_orders(message: Message, state: FSMContext):
         await message.answer(res_text, reply_markup=home_button, parse_mode='Markdown')
             
 
+async def handle_edit_order(message: Message, state: FSMContext):
+    user_id = message.from_user.id
+    user:dict = get_user(user_id)
+    aevo = AevoClient(**user)
+
+    user_input = message.text.strip().upper()
     
+    if get_trade_cache(user_id, 'limit_price') is None:
+        _input = float(user_input)
+        add_trade_cache(user_id, 'limit_price', _input)
+        res_text = f"Limit price is set to ${_input}\n"
+        res_text +=  f"Please enter the new Order Size"
+        await message.answer(res_text)
+        await state.set_state(TradeState.setting_order_edit)
+
+    elif get_trade_cache(user_id, 'quantity') is None:
+        _input = float(user_input)
+        add_trade_cache(user_id, 'quantity', _input)
+        res_text = process_trade_edit_cache(user_id)
+        await message.answer(res_text, reply_markup=two_way_button("Yes", "No"))
+        await state.set_state(TradeState.setting_order_edit)
+
+    else:
+        if user_input.lower() == 'no':
+            delete_trade_cache(user_id)
+            await message.answer("Your Order Edit request has been successfully cancelled", reply_markup=home_button)
+            return
+        
+        aevo_trade_data = get_trade_cache_data(user_id)
+        data = aevo.rest_edit_order(**aevo_trade_data)
+        if 'error' in data:
+            delete_trade_cache(user_id)
+            await message.answer(f"There was an error processing your order edit request 🥹\n{data['error']}", reply_markup=home_button)
+            return
+        res_text = f"Order has been Successfully edited 🎉 \nHere are your new order details \n\n"
+        res_text += process_order_data(data)
+        delete_trade_cache(user_id)
+        await message.answer(res_text, reply_markup=home_button, parse_mode='Markdown')
+            

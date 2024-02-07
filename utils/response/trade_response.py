@@ -48,3 +48,18 @@ def process_trade_cache(user_id):
     
     return res_text
 
+
+def process_trade_edit_cache(user_id):
+    is_buy = get_trade_cache(user_id, 'is_buy')
+    _trade_direction = 'buy' if is_buy else 'sell'
+    quantity = get_trade_cache(user_id, 'quantity')
+    limit_price = get_trade_cache(user_id, 'limit_price')
+    
+    res_text =  f"Please confirm the order details below (Yes/No)\n\n"
+    res_text += f"Direction: {_trade_direction}\n"
+    res_text += f"Order Size: {quantity}\n"
+    res_text += f"Order Type: Limit Order\n"
+    res_text += f"Limit Price: ${limit_price}\n"
+    
+    return res_text
+
