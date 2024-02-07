@@ -11,6 +11,7 @@ from Aevo_SDK.AlethieumAevoSDK import AevoClient
 class TradeState(StatesGroup):
     setting_order = State() 
     setting_order_edit = State() 
+    setting_edit_order = State() 
 
 
 async def trade(callback: CallbackQuery, state: FSMContext):
@@ -70,7 +71,7 @@ async def handle_order_edits(message: Message, state: FSMContext):
         is_buy = True if order['side'] == 'buy' else False
         add_trade_cache(user_id, 'is_buy', is_buy)
         await message.answer(f"Order with id {order_id} is active\nInitial Limit Price: {order['price']}\nInitial Order Size: {order['amount']}\n\nPlease enter the new limit price", reply_markup=ReplyKeyboardRemove())
-        await state.set_state(TradeState.setting_order_edit)
+        await state.set_state(TradeState.setting_edit_order)
         
     else:
         response = aevo.rest_cancel_order(order_id)
@@ -163,14 +164,14 @@ async def handle_edit_order(message: Message, state: FSMContext):
         res_text = f"Limit price is set to ${_input}\n"
         res_text +=  f"Please enter the new Order Size"
         await message.answer(res_text)
-        await state.set_state(TradeState.setting_order_edit)
+        await state.set_state(TradeState.setting_edit_order)
 
     elif get_trade_cache(user_id, 'quantity') is None:
         _input = float(user_input)
         add_trade_cache(user_id, 'quantity', _input)
         res_text = process_trade_edit_cache(user_id)
         await message.answer(res_text, reply_markup=two_way_button("Yes", "No"))
-        await state.set_state(TradeState.setting_order_edit)
+        await state.set_state(TradeState.setting_edit_order)
 
     else:
         if user_input.lower() == 'no':
@@ -184,7 +185,7 @@ async def handle_edit_order(message: Message, state: FSMContext):
             delete_trade_cache(user_id)
             await message.answer(f"There was an error processing your order edit request 🥹\n{data['error']}", reply_markup=home_button)
             return
-        res_text = f"Order has been Successfully edited 🎉 \nHere are your new order details \n\n"
+        res_text = f"Order has been Successfully updated 🎉 \nHere are your new order details \n\n"
         res_text += process_order_data(data)
         delete_trade_cache(user_id)
         await message.answer(res_text, reply_markup=home_button, parse_mode='Markdown')

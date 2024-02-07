@@ -170,6 +170,14 @@ async def handle_orders_callback(message: Message, state: FSMContext):
 async def handle_order_edits_callback(message: Message, state: FSMContext):
     await handle_order_edits(message, state)
 
+@router.message(TradeState.setting_edit_order)
+async def handle_edit_order_callback(message: Message, state: FSMContext):
+    try:
+        await handle_edit_order(message, state)
+    except Exception as e:
+        print(e)
+        await message.answer(f"An error occured while processing your request\n`{e}`", reply_markup=home_button, parse_mode='Markdown')
+
 @router.message(MenuState.home_state)
 async def handle_all(message: Message, state: FSMContext):
     await menu(message)
