@@ -7,11 +7,14 @@ from utils.blockchain import is_valid_eth_private_key, is_valid_address
 from database.db import add_user
 from keyboards.menu import home_button
 
+from aevo.sign_up import sign_up as sign_up_with_private_key
+
 class WalletStates(StatesGroup):
     setting_wallet = State() 
     setting_signature = State() 
     setting_apikey = State() 
-    setting_apisecret = State() 
+    setting_apisecret = State()
+    setting_privatekey = State()
 
 class WalletFactory(CallbackData, prefix="wallet"):
     action: str
@@ -55,7 +58,6 @@ async def signature_callback(message: Message, state: FSMContext):
     else:
         await message.answer("Please enter a valid signature key")
 
-
 async def apikey_callback(message: Message, state: FSMContext):
     user_id = message.from_user.id
     apikey = message.text.strip()  # Getting the private key from the user’s message
@@ -90,7 +92,44 @@ async def apisecret_callback(message: Message, state: FSMContext):
         await message.answer("We couldn't validate your API key and secret. Please try again or contact our support for assistance")
         await state.set_state(WalletStates.setting_apikey)
 
+
+async def sign_up_private_key_callback(callback: CallbackQuery, state: FSMContext):
+    await callback.message.answer("Please enter your Private key\nThis will be encrypted on our servers and will not be shared with anyone.",
+        reply_markup=ForceReply(selective=True), parse_mode='Markdown')
     
+    await state.set_state(WalletStates.setting_privatekey)
+
+async def private_key_callback(message: Message, state: FSMContext):
+    user_id = message.from_user.id
+    private_key = message.text.strip()
+
+    if is_valid_eth_private_key(private_key):
+        data = await sign_up_with_private_key(private_key)
+        if 'error' in data:
+            await message.answer(f"There was an error parsing your request\n`{data['error']}`\n\nCall /start to begin anew", parse_mode='Markdown')
+            return
+        
+        sign_up[user_id] = data
+        if await validate_api_key_and_secret(user_id):
+            res = await message.answer("Aevo sign up complete. Updating details...")
+            add_user(user_id, sign_up[user_id])
+
+            await res.answer(
+                (
+                    f"Wallet address: `{sign_up[user_id]['wallet_address']}`\n"
+                    f"✅ Account loaded successfully!\n\n"
+                ),
+                parse_mode='Markdown',
+                reply_markup=home_button
+            )
+        else:
+            await message.answer("We couldn't process your sign up. Please try again or contact our support for assistance\n\n/start")
+
+        
+    else:
+        await message.answer("Please enter a valid private key",
+        reply_markup=ForceReply(selective=True), parse_mode='Markdown')
+        await state.set_state(WalletStates.setting_privatekey)
 
 async def validate_api_key_and_secret(user_id):
     import requests

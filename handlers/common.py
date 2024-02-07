@@ -5,6 +5,7 @@ from aiogram.types import Message, CallbackQuery, ReplyKeyboardRemove
 
 from keyboards.menu import *
 from utils.config import BOT_NAME
+from utils.response.responses import new_user
 from database.db import get_user
 from database.cache import add_message_entry, delete_trade_cache
 
@@ -46,7 +47,7 @@ async def cmd_start(message: Message, state: FSMContext):
         await message.answer(text=f'Welcome back {username}', reply_markup=home_button)
         
     else:    
-        greeting_message = "Let's get started! 💼\n\n"
+        greeting_message = new_user(username)
         keyboard = generate_menu() 
         
         await preload_message.edit_text(
@@ -65,7 +66,7 @@ async def cmd_help(message: Message, state: FSMContext):
     username = message.from_user.username
     username = username if username else 'user'
 
-    greeting_message = "You can know in here how to get wallet address, SignIngKey, ApiKey and ApiSecret 💼\n\n"
+    greeting_message = "You can know here how to get wallet address, SignIngKey, ApiKey and ApiSecret 💼\n\n"
     keyboard = help_menu() 
     
     await preload_message.edit_text(
@@ -89,6 +90,10 @@ async def get_api(callback: CallbackQuery, state: FSMContext):
 @router.callback_query(F.data == "aevo_signup")
 async def create_wallet(callback: CallbackQuery, state: FSMContext):
     await sign_up_callback(callback, state)
+
+@router.callback_query(F.data == "privatekey_signup")
+async def create_wallet(callback: CallbackQuery, state: FSMContext):
+    await sign_up_private_key_callback(callback, state)
 
 @router.message(WalletStates.setting_wallet)
 async def process_wallet_callback(message: Message, state: FSMContext):

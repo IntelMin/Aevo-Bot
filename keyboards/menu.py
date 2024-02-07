@@ -10,9 +10,10 @@ class MenuFactory(CallbackData, prefix="trade"):
 
 def generate_menu():
     markup = InlineKeyboardBuilder()
-    markup.button(text="----- Set up Aevo Account -----", callback_data='aevo_signup')
+    markup.button(text="Sign up with Private Key", callback_data='privatekey_signup')
+    markup.button(text="Sign up with Aevo Credentials", callback_data='aevo_signup')
 
-    markup.adjust(1)
+    markup.adjust(1,1)
     return markup.as_markup()
 
 def help_menu():
