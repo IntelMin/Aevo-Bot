@@ -20,6 +20,6 @@ def delete_trade_cache(user_id):
 
 def get_trade_cache_data(user_id):
     all_data = trade_cache[user_id]
-    all_data.pop('request')
-    all_data.pop('asset')
+    all_data.pop('request', None)
+    all_data.pop('asset', None)
     return all_data
