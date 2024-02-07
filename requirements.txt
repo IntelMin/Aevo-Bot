@@ -19,3 +19,5 @@ websockets==11.0.3
 python-dotenv==1.0.0
 Requests==2.31.0
 rich==13.5.2
+pendulum==3.0.0
+numpy==1.26.0

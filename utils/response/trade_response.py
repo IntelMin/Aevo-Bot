@@ -49,6 +49,21 @@ def process_trade_cache(user_id):
     return res_text
 
 
+def process_gridbot_trade_cache(user_id):
+    asset = get_trade_cache(user_id, 'asset')
+    order_size = get_trade_cache(user_id, 'order_size')
+    grid_size = get_trade_cache(user_id, 'grid_size')
+    grid_line = get_trade_cache(user_id, 'grid_line')
+    
+    res_text =  f"Please confirm the order details below (Yes/No)\n\n"
+    res_text += f"Asset: {asset}\n"
+    res_text += f"Order Size: {order_size} {asset} per trade\n"
+    res_text += f"Grid Size: ${grid_size} per trade"
+    res_text += f"Grid Lines: {grid_line}"
+    
+    return res_text
+
+
 def process_trade_edit_cache(user_id):
     is_buy = get_trade_cache(user_id, 'is_buy')
     _trade_direction = 'buy' if is_buy else 'sell'
