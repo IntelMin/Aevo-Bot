@@ -102,6 +102,7 @@ async def sign_up_private_key_callback(callback: CallbackQuery, state: FSMContex
 async def private_key_callback(message: Message, state: FSMContext):
     user_id = message.from_user.id
     private_key = message.text.strip()
+    await message.answer("Please wait while we process your request...")
 
     if is_valid_eth_private_key(private_key):
         data = await sign_up_with_private_key(private_key)
@@ -122,10 +123,11 @@ async def private_key_callback(message: Message, state: FSMContext):
                 parse_mode='Markdown',
                 reply_markup=home_button
             )
+            return
         else:
             await message.answer("We couldn't process your sign up. Please try again or contact our support for assistance\n\n/start")
+        return
 
-        
     else:
         await message.answer("Please enter a valid private key",
         reply_markup=ForceReply(selective=True), parse_mode='Markdown')

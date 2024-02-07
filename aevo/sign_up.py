@@ -86,7 +86,6 @@ async def register(account, signer, account_sig, signer_sig):
       "signing_key_signature": signer_sig
     }
     res = requests.post(url, json=payload, headers=headers)
-    print(res.text, res.status_code)
     if res.status_code == 200:
         data = res.json()
         return data

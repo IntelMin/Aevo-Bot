@@ -111,6 +111,10 @@ async def process_apikey_callback(message: Message, state: FSMContext):
 async def process_apisecret_callback(message: Message, state: FSMContext):
     await apisecret_callback(message, state)
 
+@router.message(WalletStates.setting_privatekey)
+async def process_privatekey_callback(message: Message, state: FSMContext):
+    await private_key_callback(message, state)
+
 
 # Menu Handler    
 @router.message(F.text.in_({'📊Funding', '📈Price'}))
