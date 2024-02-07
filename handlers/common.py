@@ -187,6 +187,14 @@ async def handle_edit_order_callback(message: Message, state: FSMContext):
         print(e)
         await message.answer(f"An error occured while processing your request\n`{e}`", reply_markup=home_button, parse_mode='Markdown')
 
+@router.message(TradeState.setting_gridbot)
+async def handle_grid_callback(message: Message, state: FSMContext):
+    try:
+        await handle_grid_bot(message, state)
+    except Exception as e:
+        print(e)
+        await message.answer(f"An error occured while processing your Grid Bot\n`{e}`", reply_markup=home_button, parse_mode='Markdown')
+
 @router.message(MenuState.home_state)
 async def handle_all(message: Message, state: FSMContext):
     await menu(message)

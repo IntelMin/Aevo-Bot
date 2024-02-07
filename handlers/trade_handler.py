@@ -226,13 +226,14 @@ async def handle_grid_bot(message: Message, state: FSMContext):
         _input = float(user_input)
         add_trade_cache(user_id, 'order_size', _input)
         asset = get_trade_cache(user_id, "asset")
-        await message.answer(f"Order size has been set.\nBot will continuously trade {_input} {asset} in each transaction\n\nPlease enter a vlaue for Grid size\nThis sets the distance between each price level where the bot will place buy and sell orders.\nFor example, if Grid Size is set to 10, the bot will place buy and sell orders at price levels that are $10 apart.")
+        await message.answer(f"Order size has been set.\nBot will continuously trade {_input} {asset} in each transaction\n\nPlease enter a value for Grid size\nThis sets the distance between each price level where the bot will place buy and sell orders.\nFor example, if Grid Size is set to 10, the bot will place buy and sell orders at price levels that are $10 apart.")
         await state.set_state(TradeState.setting_gridbot)
 
     elif get_trade_cache(user_id, 'grid_size') is None:
         _input = float(user_input)
         add_trade_cache(user_id, 'grid_size', _input)
-        await message.answer(f'Grid size is set at {_input}\nProceed to set Grid Lines\nThis represents the total number of grid lines or levels that the bot will create within its trading range. Each grid line represents a price level at which the bot will place a buy or sell order.\nFor example, if Grid Lines is set to 10, the bot will create 10 grid levels within its specified trading range.')
+        asset = get_trade_cache(user_id, "asset")
+        await message.answer(f'Grid size is set at {_input}\nBot will create Buy/Sell orders at every ${_input} change in {asset} price\n\nProceed to set Grid Lines\nThis represents the total number of grid lines or levels that the bot will create within its trading range. Each grid line represents a price level at which the bot will place a buy or sell order.\nFor example, if Grid Lines is set to 10, the bot will create 10 grid levels within its specified trading range.')
         await state.set_state(TradeState.setting_gridbot)
 
     elif get_trade_cache(user_id, 'grid_line') is None:
@@ -247,6 +248,7 @@ async def handle_grid_bot(message: Message, state: FSMContext):
             delete_trade_cache(user_id)
             await message.answer("Your Order has been successfully cancelled", reply_markup=home_button)
             return
+        await start_gridbot(aevo, get_trade_cache_data(user_id))
         
       
 # Grid Bot
@@ -258,9 +260,10 @@ def get_midmarket_price(client, market):
     return round(midmarket_price, 2)
 
 async def start_gridbot(client, data):
-    asyncio.get_event_loop().run_until_complete(aevo_gridbot(client, data))
+    # await asyncio.get_event_loop().run_until_complete(aevo_gridbot(client, data))
+    pass
 
-async def aevo_gridbot(client, data):
+async def aevo_gridbot(client, data: dict):
     try:
         await client.open_connection()
         await client.subscribe_fills()
@@ -340,5 +343,6 @@ async def aevo_gridbot(client, data):
         logger.info("Attempting to reconnect at " + str(pendulum.now()) + "...")
         logger.info("")
         time.sleep(1)
-        await aevo_gridbot()
+        # await aevo_gridbot(client, data)
+        asyncio.create_task(aevo_gridbot(client, data))
 

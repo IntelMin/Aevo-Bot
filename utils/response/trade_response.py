@@ -58,7 +58,7 @@ def process_gridbot_trade_cache(user_id):
     res_text =  f"Please confirm the order details below (Yes/No)\n\n"
     res_text += f"Asset: {asset}\n"
     res_text += f"Order Size: {order_size} {asset} per trade\n"
-    res_text += f"Grid Size: ${grid_size} per trade"
+    res_text += f"Grid Size: ${grid_size} per trade\n"
     res_text += f"Grid Lines: {grid_line}"
     
     return res_text

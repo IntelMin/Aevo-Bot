@@ -22,5 +22,4 @@ def get_trade_cache_data(user_id):
     all_data = trade_cache[user_id]
     all_data.pop('request', None)
     all_data.pop('asset', None)
-    all_data.pop('instrument_name', None)
     return all_data
