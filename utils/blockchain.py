@@ -1,17 +1,9 @@
 import secrets
 from web3 import Web3
-from .config import RPC_URL, SIGNING_KEY
+from .config import RPC_URL
 # from .abi import abi_manager
 
 w3 = Web3(Web3.HTTPProvider(RPC_URL))
-
-# BOT_CONTRACT = Web3.to_checksum_address(BOT_CONTRACT)
-
-# # Ensure we're connected to the node
-# if not w3.is_connected():
-#     raise ValueError("Failed to connect to BASE node at:", RPC_URL)
-
-# contract = w3.eth.contract(address=BOT_CONTRACT, abi=abi_manager.get_abi('FriendtechSharesV1'))
 
 def is_valid_eth_private_key(pk: str):
     pk = pk[2:] if pk.startswith('0x') else pk
